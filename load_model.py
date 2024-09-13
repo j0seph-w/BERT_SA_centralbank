@@ -1,11 +1,14 @@
+#relevant modules
 import torch
 import torch.nn as nn
 from transformers import BertTokenizer, BertModel
 
+#load BERT base model and tokenizer model
 model_checkpoint = 'bert-base-uncased'
 tokenizer = BertTokenizer.from_pretrained(model_checkpoint)
 device = torch.device('cpu') 
 
+#define the extra NN architecture (3 layers)
 class BertClassifier(nn.Module):
     def __init__(self, num_labels):
         super(BertClassifier, self).__init__()
@@ -30,9 +33,11 @@ model = BertClassifier(num_labels=3)
 model.load_state_dict(torch.load('bert_sa.pt', map_location=torch.device('cpu')))
 #model.eval()
 
+#sentiment to value mapping
 label_map = {0: 'negative', 1: 'neutral', 2: 'positive'}
 
-def predict_sentiment(phrase):
+def predict_sentiment(phrase:string):
+    """ Takes input string, encodes, outputs the predicted sentiment"""
     # Tokenize input phrases
     encodings = tokenizer(phrase, truncation=True, padding=True, return_tensors='pt')
 
@@ -48,6 +53,3 @@ def predict_sentiment(phrase):
     # Convert predictions to sentiment labels
     predicted_labels = predictions.cpu().numpy()
     return [label_map[label] for label in predicted_labels][0]
-
-#sentiment = predict_sentiment(["Curry for dinner."])
-#print(sentiment[0])
