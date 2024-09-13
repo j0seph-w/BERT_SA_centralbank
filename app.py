@@ -1,9 +1,5 @@
 from flask import Flask, render_template, request
 from load_model import model, predict_sentiment
-model.eval()
-
-label_map = {0: 'negative', 1: 'neutral', 2: 'positive'}
-
 
 app = Flask(__name__)
 
